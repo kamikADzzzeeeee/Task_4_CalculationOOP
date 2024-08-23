@@ -1,5 +1,6 @@
 package yamshikov.oop.commands;
 
+import yamshikov.oop.operations.exception.DivisionByZeroException;
 import yamshikov.oop.operations.expression.*;
 
 import java.util.Optional;
@@ -21,7 +22,11 @@ public class Commands {
         };
         Optional<ArithmeticOperationInterface> optional = Optional.ofNullable(arithmetic);
         if (optional.isPresent()) {
-            result = String.valueOf(optional.get().operation(n1, n2));
+            try {
+                result = String.valueOf(optional.get().operation(n1, n2));
+            } catch (DivisionByZeroException e){
+                result = e.getMessage();
+            }
         } else {
             result = "Неизвестная операция";
         }
