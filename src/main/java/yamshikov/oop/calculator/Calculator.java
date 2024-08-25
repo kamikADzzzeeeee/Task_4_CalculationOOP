@@ -1,83 +1,44 @@
 package yamshikov.oop.calculator;
 
+import yamshikov.oop.calculator.exception.UnknownArithmeticOperationException;
 import yamshikov.oop.commands.Commands;
+import yamshikov.oop.operations.exception.DivisionByZeroException;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.List;
 
-public class Calculator implements Starting{
-    private static final String[] allOperation = new String[]{"+","-","*","/","^"};
+public class Calculator {
 
+    public static final String[] allOperation = new String[]{"+", "-", "*", "/", "^"};
+    private double firstNumber;
+    private double secondNumber;
+    private String operation;
     private final Commands commands = new Commands();
-    private final Scanner scanner;
 
-    public Calculator(Scanner scannerIn) {
-        this.scanner = scannerIn;
+    public Calculator(double firstNumber, double secondNumber, String operation) {
+        this.firstNumber = firstNumber;
+        this.secondNumber = secondNumber;
+        this.operation = operation;
     }
 
-    public double addNumber() {
-        System.out.println("Введите число:");
-        double n = 0;
-        boolean cycle = true;
-        while (cycle) {
-            try {
-                n = Double.parseDouble(scanner.next());
-                cycle = false;
-            } catch (Exception e) {
-                System.err.println("Неверный формат введенного числа. Повторите ввод:");
-            }
-        }
-        return n;
+    public void setFirstNumber(double firstNumber) {
+        this.firstNumber = firstNumber;
     }
 
-    public String addOperation() {
-        System.out.println("Введите операцию:");
-        boolean cycle = true;
-        String op = "";
-        while (cycle) {
-            op = scanner.next();
-            for (String operation : allOperation) {
-                if (operation.equals(op)) {
-                    cycle = false;
-                    break;
-                }
-            }
-            if (cycle) {
-                System.err.println("Неверная операция. Повторите ввода:");
-            }
-
-        }
-        return op;
+    public void setSecondNumber(double secondNumber) {
+        this.secondNumber = secondNumber;
     }
 
-    @Override
-    public void start() {
-        System.out.println("Калькулятор запущен");
-        System.out.println("Введите команду:");
-        commands.getAllCommands();
-        String command = "";
-        while (!command.equals("q")) {
-            command = scanner.next();
-            switch (command) {
-                case ("h"):
-                    commands.getAllCommands();
-                    break;
-                case ("a"):
-                    System.out.println(commands.getResultArithmeticOperation(addNumber(), addNumber(), addOperation()));
-                    break;
-                case ("o"):
-                    System.out.println(Arrays.toString(allOperation));
-                    break;
-                case ("c"):
-                    commands.clearConsole();
-                    break;
-                case ("q"):
-                    System.out.println("Прекращение работы калькулятора...");
-                    break;
-                default:
-                    System.err.println("Неверно введенная команда. Повторите ввод:");
-            }
-        }
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
+
+    public double getResult() throws DivisionByZeroException, UnknownArithmeticOperationException {
+        return commands.getResultArithmeticOperation(this.firstNumber, this.secondNumber, this.operation);
+    }
+
+    public List<String> getUsedOperations(){
+        return commands.getListUsedArithmeticOperation();
+    }
+
 
 }

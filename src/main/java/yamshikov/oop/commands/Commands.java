@@ -1,53 +1,36 @@
 package yamshikov.oop.commands;
 
+import yamshikov.oop.calculator.Calculator;
+import yamshikov.oop.calculator.exception.UnknownArithmeticOperationException;
 import yamshikov.oop.operations.exception.DivisionByZeroException;
 import yamshikov.oop.operations.expression.*;
 
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
 
 public class Commands {
 
     public Commands() {
     }
 
-    private String calculation(double n1, double n2, String op) {
-        String result = "";
+    private double calculation(double n1, double n2, String op) throws DivisionByZeroException, UnknownArithmeticOperationException {
         ArithmeticOperationInterface arithmetic = switch (op) {
-            case ("+") -> new Addition();//String.valueOf(arithmeticOperation.addition(n1, n2));
+            case ("+") -> new Addition();
             case ("-") -> new Substruction();
             case ("*") -> new Multiplication();
             case ("/") -> new Division();
             case ("^") -> new Power();
-            default -> null;
+            default -> throw new UnknownArithmeticOperationException();
         };
-        Optional<ArithmeticOperationInterface> optional = Optional.ofNullable(arithmetic);
-        if (optional.isPresent()) {
-            try {
-                result = String.valueOf(optional.get().operation(n1, n2));
-            } catch (DivisionByZeroException e){
-                result = e.getMessage();
-            }
-        } else {
-            result = "Неизвестная операция";
-        }
-        return result;
+        return arithmetic.operation(n1, n2);
     }
 
-    public String getResultArithmeticOperation(double n1, double n2, String op) {
+    public double getResultArithmeticOperation(double n1, double n2, String op) throws DivisionByZeroException, UnknownArithmeticOperationException {
         return calculation(n1, n2, op);
     }
 
-    public void clearConsole() {
-        for (int i = 0; i < 50; ++i) System.out.println();
+    public List<String> getListUsedArithmeticOperation(){
+        return Arrays.asList(Calculator.allOperation);
     }
-
-    public void getAllCommands() {
-        System.out.println("h - Вывести список доступных команд");
-        System.out.println("a - Решить арифметический пример");
-        System.out.println("o - Вывести список доступных арифметических операций");
-        System.out.println("c - Очистить консоль");
-        System.out.println("q - Закрыть калькулятор");
-    }
-
 
 }
